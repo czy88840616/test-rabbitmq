@@ -3,9 +3,10 @@ const amqp = require('amqplib');
 
 const queue = 'test_queue';
 const msg = '你好，RabbitMQ！';
+const rabbitmqUrl = process.env.RABBITMQ_URL || 'amqp://localhost';
 
 async function produce() {
-  const conn = await amqp.connect('amqp://localhost');
+  const conn = await amqp.connect(rabbitmqUrl);
   const channel = await conn.createChannel();
   await channel.assertQueue(queue);
   channel.sendToQueue(queue, Buffer.from(msg));
@@ -15,7 +16,7 @@ async function produce() {
 }
 
 async function consume() {
-  const conn = await amqp.connect('amqp://localhost');
+  const conn = await amqp.connect(rabbitmqUrl);
   const channel = await conn.createChannel();
   await channel.assertQueue(queue);
   console.log('等待接收消息...');
