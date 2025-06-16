@@ -11,23 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install Docker Compose v2
         run: |
           mkdir -p ~/.docker/cli-plugins/
           curl -SL https://github.com/docker/compose/releases/download/v2.37.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
           chmod +x ~/.docker/cli-plugins/docker-compose
           docker compose version
-
-      - name: Set up Docker Compose
-        run: docker compose -f docker-compose.yml up -d
-
-      - name: 安装依赖
-        run: pnpm install
-      - name: 运行生产者
-        run: node index.js produce
-      - name: 运行消费者
-        run: |
-          timeout 5s node index.js consume || true 
+      - name: Run all services and test
+        run: docker compose up --abort-on-container-exit --exit-code-from node 
