@@ -63,23 +63,3 @@ services:
     image: mongo:4.2
     ports:
       - "27017:27017"
-
-  mosquitto:
-    image: eclipse-mosquitto:latest
-    ports:
-      - "1883:1883"
-      - "8883:8883"
-    volumes:
-      - ./packages/mqtt/scripts/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
-  node:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - ./:/app
-    command: sh -c "pnpm install && node index.js produce && node index.js consume"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      - RABBITMQ_URL=amqp://user:password@rabbitmq:5672 
