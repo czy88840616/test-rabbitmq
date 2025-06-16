@@ -22,14 +22,14 @@ jobs:
           docker compose version
       - name: Set up Docker Compose
         run: docker compose -f docker-compose.yml up -d
-      - name: Wait for RabbitMQ
+      - name: Wait for RabbitMQ health
         run: |
           for i in {1..30}; do
-            nc -z localhost 5672 && echo "RabbitMQ is up" && exit 0
-            echo "Waiting for RabbitMQ..."
+            curl -u guest:guest -f http://localhost:15672/api/health/checks/node && echo "RabbitMQ is healthy" && exit 0
+            echo "Waiting for RabbitMQ health..."
             sleep 2
           done
-          echo "RabbitMQ did not start in time" && exit 1
+          echo "RabbitMQ did not become healthy in time" && exit 1
       - name: 安装依赖
         run: pnpm install
       - name: 运行生产者
