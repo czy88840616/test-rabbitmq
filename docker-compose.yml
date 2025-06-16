@@ -11,7 +11,7 @@ services:
       - "6379:6379"
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:latest
     healthcheck:
       test: ["CMD", "rabbitmqctl", "node_health_check"]
       interval: 10s
